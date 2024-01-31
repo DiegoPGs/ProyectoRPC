@@ -1,5 +1,9 @@
 import socket
 
+# Define the server address and port
+SERVER_ADDRESS = 'localhost'
+SERVER_PORT = 8080
+
 def send_request(request):
     """
     ### Send a request to the server and print the response.
@@ -11,7 +15,7 @@ def send_request(request):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Define the server address and port
-    server_address = ('localhost', 12345)
+    server_address = (SERVER_ADDRESS, 8080)
 
     try:
         # Connect to the server
