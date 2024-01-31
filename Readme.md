@@ -1,6 +1,6 @@
 ### Primer pryecto de sistemas distribuidos
 # Proyecto RPC
-## Alumno: Diego Ignacio Puente Gallegos
+## Alumnos: Diego Ignacio Puente Gallegos, Jesús 
 
 #### Instrucciones de proyecto
 En el primer proyecto se solicita programar una aplicación usando RPC (RMI). Se debe contar con varios clientes que envían solicitudes a un servidor.

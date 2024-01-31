@@ -1,51 +1,65 @@
-from sqlalchemy import sessionmaker
-from __future__ import print_function
-import Pyro5
-import asyncio
-from configurations import database_url
+import socket
 
-@Pyro5.api.expose
-@Pyro5.api.behavior(instance_mode="single")
-class StateMachine(object):
-    def __init__(self):
-        self.data = {}
+# Define the server address and port
+SERVER_ADDRESS = 'localhost'
+SERVER_PORT = 12345
 
-    # public methods
-    def get(self, key):
-        return self.data.get(key)
-    
-    def set(self, key, value):
-        self.data[key] = value
+# Define the initial state
+state = 'INITIAL'
 
-    def add(self, key, value):
-        if key in self.data:
-            self.data[key] += value
-        else:
-            self.data[key] = value
-    
-    def mult(self, key, value):
-        if key in self.data:
-            self.data[key] *= value
-        else:
-            self.data[key] = 0
-    
-    # remote methods
-    async def read(self, key):
-        # connecto to db and read value with a sql query
-        sql = f"SELECT value FROM data WHERE key = {key}"
-        
-        # return value
+# Define the state machine transitions
+transitions = {
+    'INITIAL': {
+        'HELLO': 'GREETING',
+        'EXIT': 'EXIT'
+    },
+    'GREETING': {
+        'HOWAREYOU': 'FEELING',
+        'EXIT': 'EXIT'
+    },
+    'FEELING': {
+        'GOOD': 'THANKS',
+        'BAD': 'SORRY',
+        'EXIT': 'EXIT'
+    },
+    'SORRY': {
+        'EXIT': 'EXIT'
+    },
+    'THANKS': {
+        'EXIT': 'EXIT'
+    },
+    'EXIT': {}
+}
 
-    async def update(self, key, value, operation):
-        actions = {
-            'set': self.set,
-            'add': self.add,
-            'mult': self.mult
-        }
-        action = actions.get(operation)
+# Create a socket object
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        if action:
-            action(key, value)
-            return True
-        else:
-            return False
+# Bind the socket to the server address and port
+server_socket.bind((SERVER_ADDRESS, SERVER_PORT))
+
+# Listen for incoming connections
+server_socket.listen(1)
+print(f'Server listening on {SERVER_ADDRESS}:{SERVER_PORT}')
+
+while True:
+    # Accept a client connection
+    client_socket, client_address = server_socket.accept()
+    print(f'Client connected from {client_address}')
+
+    # Receive data from the client
+    data = client_socket.recv(1024).decode().strip()
+
+    # Process the client request and transition the state
+    if state == 'EXIT':
+        response = 'Goodbye!'
+    elif data in transitions[state]:
+        state = transitions[state][data]
+        response = f'Current state: {state}'
+    else:
+        response = 'Invalid request'
+
+    # Send the response back to the client
+    client_socket.send(response.encode())
+
+    # Close the client connection
+    client_socket.close()

@@ -1,7 +1,3 @@
-import sqlite3
-import logging
-import asyncio
-
 class StateMachine:
     def __init__(self):
         self.data = {}
@@ -58,21 +54,3 @@ class StateMachine:
             return True
         else:
             return False
-
-class Database:
-    def __init__(self, db_name):
-        self.conn = sqlite3.connect(db_name)
-        self.cursor = self.conn.cursor()
-
-    def read(self, key):
-        self.cursor.execute("SELECT value FROM data WHERE key=?", (key,))
-        result = self.cursor.fetchone()
-        if result:
-            return result[0]
-        else:
-            return None
-
-    def update(self, key, value):
-        self.cursor.execute("UPDATE data SET value=? WHERE key=?", (value, key))
-        self.conn.commit()
-        return True
