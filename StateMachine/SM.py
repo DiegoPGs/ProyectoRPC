@@ -1,6 +1,7 @@
 import asyncio
 import icecream as ic
 
+
 class StateMachine:
     def __init__(self):
         # dictionary of states
