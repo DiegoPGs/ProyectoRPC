@@ -1,11 +1,40 @@
-import asyncio
-#import icecream as ic
+import logging
 
+# Set up logger
+logging.basicConfig(filename='logs.log', level=logging.INFO)
 
 class StateMachine:
     def __init__(self):
         # dictionary of states
         self.data = {}
+
+    # protected methods
+    def _transition(self, data):
+        """
+        Transitions the state machine
+
+        Args:
+            data (dictionary): data to transition the state machine
+
+        Returns:
+            _type_: response from the state machine
+        """
+        print(f'Data received: {data}')
+
+        try:
+            key = data.get('key')
+            value = data.get('value')
+            if data.get('operation') is None:
+                # read operation
+                return self.get(key)
+            else:
+                # update operation
+                operation = data.get('operation')
+                return self.update(key, value, operation)
+        except Exception as e:
+            print(f'Error: {e}')
+            logging.error(f'Error: {e}')
+            return False
 
     # public methods
     def get(self, key):

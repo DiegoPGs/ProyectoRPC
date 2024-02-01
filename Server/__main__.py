@@ -1,4 +1,5 @@
 import socket
+import json
 from SM import StateMachine
 from server import Server
 from server import SERVER_ADDRESS, SERVER_PORT
@@ -32,11 +33,16 @@ class StateMachineServer(Server):
             data = client_socket.recv(1024).decode().strip()
             print(f'Data received from client: {data}')
 
+            # Deserialize the data
+            data = json.loads(data)
+            print(f'Data deserialized: {data}')
+
             # Process the client request and transition the state
-            #response = self.sm.transition(data)
-            
+            response = self.sm._transition(data)
+
             # Send the response back to the client
             #client_socket.send(response.encode())
+            client_socket.sendall(str(response).encode())
 
             # Close the client connection
             client_socket.close()
