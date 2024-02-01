@@ -37,3 +37,6 @@ def send_request(request):
 def main():
     # Send a request to the server
     send_request('Hello, server! uwuw')
+
+if __name__ == '__main__':
+    main()
