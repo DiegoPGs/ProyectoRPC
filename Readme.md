@@ -23,6 +23,6 @@ En proyectos posteriores se deberá tener múltiples servidores que replican el 
 #### Instruciones para correr proyecto
 pip install requirements.txt
 
-python server.py
+python Server
 python client.py
 
