@@ -1,6 +1,6 @@
 import logging
 
-# Set up logger
+# Set up logger 
 logging.basicConfig(filename='logs.log', level=logging.INFO)
 
 def main():

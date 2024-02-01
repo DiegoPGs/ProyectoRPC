@@ -1,5 +1,5 @@
 import asyncio
-import icecream as ic
+#import icecream as ic
 
 
 class StateMachine:
@@ -91,5 +91,5 @@ class StateMachine:
             action(key, value)
             return True
         else:
-            ic.icecream('Invalid operation')
+            print(f'Invalid operation: {operation}')
             return False

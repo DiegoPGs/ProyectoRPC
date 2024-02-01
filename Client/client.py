@@ -34,5 +34,6 @@ def send_request(request):
         # Close the socket
         client_socket.close()
 
-# Example usage
-send_request("GET /state HTTP/1.1\r\nHost: localhost\r\n\r\n")
+def main():
+    # Send a request to the server
+    send_request('Hello, server! uwuw')
