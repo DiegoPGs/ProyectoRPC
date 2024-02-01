@@ -26,3 +26,4 @@ pip install requirements.txt
 python Server
 python client.py
 
+Ejecutar client.py para cada operación.
