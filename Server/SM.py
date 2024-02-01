@@ -17,7 +17,7 @@ class StateMachine:
             data (dictionary): data to transition the state machine
 
         Returns:
-            _type_: response from the state machine
+            Bool: response from the state machine
         """
         print(f'Data received: {data}')
 
