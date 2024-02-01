@@ -118,6 +118,7 @@ class StateMachine:
 
         if action:
             action(key, value)
+            logging.info(f'Key {key} updated to {self.get(key)} with operation {operation} and value {value}')
             return True
         else:
             print(f'Invalid operation: {operation}')
