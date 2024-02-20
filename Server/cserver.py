@@ -1,9 +1,10 @@
 import threading
-from server import Server
-from SM import StateMachine
 import socket
 import json
 import logging
+from server import Server
+from SM import StateMachine
+from concurrent.futures import ThreadPoolExecutor
 
 
 class ConcurrentStateMachineServer(Server):
@@ -50,14 +51,11 @@ class ConcurrentStateMachineServer(Server):
         server_socket.listen(5)  # Esperar por conexiones entrantes, hasta 5 en cola
         print(f'Server listening on {self.host}:{self.port}')
 
-        try:
+        with ThreadPoolExecutor(max_workers=10) as executor:
             while True:
                 client_socket, client_address = server_socket.accept()
                 print(f'Client connected from {client_address}')
                 logging.info(f'Client connected from {client_address}')
                 client_thread = threading.Thread(target=self.handle_client, args=(client_socket,))
                 client_thread.start()
-        except KeyboardInterrupt:
-            print("Server is shutting down. 👾")
-        finally:
-            server_socket.close()
+                server_socket.close()
