@@ -16,4 +16,5 @@ class Server:
 
 # Define the server address and port
 SERVER_ADDRESS = 'localhost'
+#SERVER_ADDRESS = '0.0.0.0'
 SERVER_PORT = 8080

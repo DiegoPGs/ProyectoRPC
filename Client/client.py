@@ -1,10 +1,8 @@
 import socket
 import logging
 import json
+from configs import SERVER_ADDRESS, SERVER_PORT
 
-# Define the server address and port
-SERVER_ADDRESS = 'localhost'
-SERVER_PORT = 8080
 
 # Set up logger
 logging.basicConfig(filename='logs.log', level=logging.INFO)
@@ -68,7 +66,7 @@ def main():
 
     # Define the data to send to the server
     data = {'key': 0, 'value': 10.1, 'operation': 'set'}
-    
+
     # Serialize the data
     data = json.dumps(data)
 
