@@ -4,12 +4,12 @@ import socket
 import json
 import logging
 import queue
-from Server.server import Server
-from Server.SM import StateMachine
+from server import Server
+from SM import StateMachine
 from concurrent.futures import ThreadPoolExecutor
-from Server.configs import SERVER_ADDRESS, SERVER_PORTS
+from configs import SERVER_ADDRESS, SERVER_PORTS
 
-
+logging.basicConfig(filename='logs.log', level=logging.INFO)
 class Peer(Server):
     """
     Clase para el servidor concurrente que maneja una máquina de estados.
@@ -37,7 +37,7 @@ class Peer(Server):
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     s.connect((SERVER_ADDRESS, port))
-                    s.sendall(json.dumps(data))
+                    s.sendall(json.dumps(data).encode())
                     response = s.recv(1024).decode()
                     print(f'Replica from {port}: {response}')
                     logging.info(f'Replica from {port}: {response}')
@@ -58,12 +58,25 @@ class Peer(Server):
                 print(f'Data received from client: {data}')
                 logging.info(f'Data received from client: {data}')
 
+                # Encode data
+                data = json.loads(data)
+
                 # Insertar datos en el buffer
                 self.buffer.put(data, block=True, timeout=1)
                 logging.info(f'Data into queue: {data}')
 
                 # Replicar petición a otros servidores
-                self.replicar_peticion(data)
+                for port in set(SERVER_PORTS) - {self.port}: # Todos los servidores excepto el actual
+                    try:
+                        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                            s.connect((SERVER_ADDRESS, port))
+                            s.sendall(json.dumps(data).encode())
+                            response = s.recv(1024).decode()
+                            print(f'Replica from {port}: {response}')
+                            logging.info(f'Replica from {port}: {response}')
+                    except Exception as e:
+                        print(f"Error replicating request: {e}")
+                        logging.error(f"Error replicating request: {e}")
 
             except Exception as e:
                 print(f"Error handling client: {e}")
@@ -104,24 +117,25 @@ class Peer(Server):
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((self.host, self.port))
-        server_socket.listen(7)  # Esperar por conexiones entrantes, hasta 5 en cola
+        server_socket.listen(7)  # Esperar por conexiones entrantes, hasta 7 en cola
         print(f'Server listening on {self.host}:{self.port}')
         logging.info(f'Server listening on {self.host}:{self.port}')
 
-        with ThreadPoolExecutor(max_workers=10) as executor:
-            while True:
-                # Aceptar conexiones entrantes
-                client_socket, client_address = server_socket.accept()
-                print(f'Client connected from {client_address}')
-                logging.info(f'Client connected from {client_address}')
-                # Crear un nuevo hilo para manejar la interconexión
-                client_thread = threading.Thread(target=self.handle_client, args=(client_socket,))
-                producer_thread = threading.Thread(target=self.consumir_peticion)
-                # Iniciar el hilo
-                client_thread.start()
-                producer_thread.start()
-
-                server_socket.close()
+        try:
+            with ThreadPoolExecutor(max_workers=10) as executor:
+                while True:
+                    # Aceptar conexiones entrantes
+                    client_socket, client_address = server_socket.accept()
+                    print(f'Client connected from {client_address}')
+                    logging.info(f'Client connected from {client_address}')
+                    # Crear un nuevo hilo para manejar la interconexión
+                    client_thread = threading.Thread(target=self.handle_client, args=(client_socket,))
+                    producer_thread = threading.Thread(target=self.consumir_peticion)
+                    # Iniciar el hilo
+                    client_thread.start()
+                    producer_thread.start()
+        finally:
+            server_socket.close()
 
     def send_request(self, request, host, port):
         """
@@ -162,8 +176,9 @@ class Peer(Server):
         return response
 
 if __name__ == '__main__':
-    # grab server port from the command line
-    SERVER_PORT = int(sys.argv[1])
+    # usar argumentos de línea de comandos para el puerto
+    puerto = int(sys.argv[1])
 
-    server = Peer(SERVER_ADDRESS, SERVER_PORT)
-    server.start()
+    # Crear un nuevo servidor
+    peer = Peer(SERVER_ADDRESS, puerto)
+    peer.start()
