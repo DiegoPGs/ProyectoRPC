@@ -6,7 +6,6 @@ from configs import SERVER_ADDRESS, SERVER_PORT
 def send_request(data):
     client = Client(SERVER_ADDRESS, SERVER_PORT)
     response = client.send_request(data)
-    print(f"Response: {response}")
 
 def main():
     # Define the data to send to the server

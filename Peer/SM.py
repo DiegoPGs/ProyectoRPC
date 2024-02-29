@@ -24,12 +24,12 @@ class StateMachine:
         try:
             key = data.get('key')
             value = data.get('value')
-            if data.get('operation') is None:
+            if data.get('action') is None:
                 # read operation
                 return self.get(key)
             else:
                 # update operation
-                operation = data.get('operation')
+                operation = data.get('action')
                 return self.update(key, value, operation)
         except Exception as e:
             print(f'Error: {e}')
