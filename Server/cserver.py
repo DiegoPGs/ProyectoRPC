@@ -24,6 +24,7 @@ class ConcurrentStateMachineServer(Server):
     def __init__(self, host, port):
         super().__init__(host, port)
         self.sm = StateMachine()
+        self.lock = threading.Lock() # lock para zonas críticas
 
     def replicar_peticion(self, data):
         """
@@ -50,46 +51,50 @@ class ConcurrentStateMachineServer(Server):
         Args:
             client_socket (tuple): (host, port)
         """
-        try:
-            # Recibir datos del cliente
-            data = client_socket.recv(1024).decode().strip()
-            print(f'Data received from client: {data}')
+        with self.lock:
+            try:
+                # Recibir datos del cliente
+                data = client_socket.recv(1024).decode().strip()
+                print(f'Data received from client: {data}')
+                logging.info(f'Data received from client: {data}')
 
-            # Insertar datos en el buffer
-            self.buffer.put(data, block=True, timeout=1)
+                # Insertar datos en el buffer
+                self.buffer.put(data, block=True, timeout=1)
+                logging.info(f'Data into queue: {data}')
 
-            # Replicar petición a otros servidores
-            self.replicar_peticion(data)
+                # Replicar petición a otros servidores
+                self.replicar_peticion(data)
 
-        except Exception as e:
-            print(f"Error handling client: {e}")
+            except Exception as e:
+                print(f"Error handling client: {e}")
 
-        finally:
-            # Cerrar el socket del cliente
-            client_socket.close()
+            finally:
+                # Cerrar el socket del cliente
+                client_socket.close()
 
     def consumir_peticion(self):
         """
         Consume la petición de la cola de peticiones.
         Mandar a llamar la trnasición de la máquina de estados y escribe un log.
         """
-        try:
-            # Deserializar datos
-            data = json.loads(self.buffer.get(block=True, timeout=1))
-            print(f'Consuming request: {data}')
-            # Log request
-            logging.info(f'Consuming request: {data}')
+        with self.lock:
+            try:
+                # Deserializar datos
+                data = json.loads(self.buffer.get(block=True, timeout=1))
+                print(f'Consuming request: {data}')
+                # Log request
+                logging.info(f'Consuming request: {data}')
 
-            # Procesar los datos
-            response = self.sm.transition(data)
-            print(f'Response: {response}')
-            # Log response
-            logging.info(f'Response: {response}')
+                # Procesar los datos
+                response = self.sm.transition(data)
+                print(f'Response: {response}')
+                # Log response
+                logging.info(f'Response: {response}')
 
-        except queue.Empty:
-            print("Buffer vacío, esperando")
-        except Exception as e:
-            print(f"Error consuming request: {e}")
+            except queue.Empty:
+                print("Buffer vacío, esperando")
+            except Exception as e:
+                print(f"Error consuming request: {e}")
 
     def start(self):
         """
@@ -116,3 +121,11 @@ class ConcurrentStateMachineServer(Server):
                 producer_thread.start()
 
                 server_socket.close()
+
+if __name__ == '__main__':
+    threads = []
+    for port in SERVER_PORTS:
+        server = ConcurrentStateMachineServer(SERVER_ADDRESS, port)
+        thread = threading.Thread(target=server.start)
+        thread.start()
+        threads.append(thread)
