@@ -8,8 +8,8 @@ class StateMachine:
         # dictionary of states
         self.data = {}
 
-    # protected methods
-    def _transition(self, data):
+    # methods
+    def transition(self, data):
         """
         Transitions the state machine
 
@@ -36,7 +36,6 @@ class StateMachine:
             logging.error(f'Error: {e}')
             return False
 
-    # public methods
     def get(self, key):
         """
         Getter for data dictionary
