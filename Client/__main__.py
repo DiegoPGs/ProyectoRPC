@@ -10,17 +10,7 @@ def send_request(data):
 def main():
     # Define the data to send to the server
     data = [
-        {'key': 0, 'value': 10.13, 'action': 'set'},
-        {'key': 0, 'value': 10.12, 'action': 'add'},
-        {'key': 1, 'value': 10.1, 'action': 'set'},
-        {'key': 1, 'value': 10.0, 'action': 'add'},
-        {'key': 2, 'value': 10.1, 'action': 'set'},
-        {'key': 0, 'value': 10.8, 'action': 'add'},
-        {'key': 3, 'value': 10.7, 'action': 'set'},
-        {'key': 0, 'value': 10.6, 'action': 'add'},
-        {'key': 0, 'value': 10.5, 'action': 'set'},
-        {'key': 1, 'value': 10.3, 'action': 'add'},
-        {'key': 3, 'value': 10.2, 'action': 'set'}
+        {'key': 0, 'value': 10.13, 'action': 'set'}
     ]
 
     """

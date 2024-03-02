@@ -22,6 +22,9 @@ class StateMachine:
         print(f'Data received: {data}')
 
         try:
+            # string to dictionary
+            data = eval(data)
+            # get key and value
             key = data.get('key')
             value = data.get('value')
             if data.get('action') is None:

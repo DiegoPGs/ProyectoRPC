@@ -33,16 +33,18 @@ class Peer(Server):
 
         data (dict): Datos de la petición codificados.
         """
-        for port in SERVER_PORTS - {self.port}: # Todos los servidores excepto el actual
-            try:
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                    s.connect((SERVER_ADDRESS, port))
-                    s.sendall(json.dumps(data).encode())
-                    response = s.recv(1024).decode()
-                    print(f'Replica from {port}: {response}')
-                    logging.info(f'Replica from {port}: {response}')
-            except Exception as e:
-                print(f"Error replicating request: {e}")
+        # Replicar petición a otros servidores
+        for port in set(SERVER_PORTS) - {self.port}: # Todos los servidores excepto el actual
+                try:
+                    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                        s.connect((SERVER_ADDRESS, port))
+                        s.sendall(json.dumps(data).encode())
+                        response = s.recv(1024).decode()
+                        print(f'Replica from {port}: {response}')
+                        logging.info(f'Replica from {port}: {response}')
+                except Exception as e:
+                    print(f"Error replicating request: {e}")
+                    logging.error(f"Error replicating request: {e}")
 
     def handle_client(self, client_socket):
         """
@@ -51,63 +53,56 @@ class Peer(Server):
         Args:
             client_socket (tuple): (host, port)
         """
-        with self.lock:
-            try:
-                # Recibir datos del cliente
-                data = client_socket.recv(1024).decode().strip()
-                print(f'Data received from client: {data}')
-                logging.info(f'Data received from client: {data}')
+        try:
+            # Recibir datos del cliente
+            data = client_socket.recv(1024).decode().strip()
+            print(f'Data received from client: {data}')
+            logging.info(f'Data received from client: {data}')
 
-                # Encode data
-                data = json.loads(data)
+            # Encode data
+            data = json.loads(data.encode())
 
-                # Insertar datos en el buffer
-                self.buffer.put(data, block=True, timeout=1)
-                logging.info(f'Data into queue: {data}')
+            # Insertar datos en el buffer
+            self.buffer.put(data, block=True, timeout=1)
+            logging.info(f'Data into queue: {data}')
 
-                # Replicar petición a otros servidores
-                for port in set(SERVER_PORTS) - {self.port}: # Todos los servidores excepto el actual
-                    try:
-                        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                            s.connect((SERVER_ADDRESS, port))
-                            s.sendall(json.dumps(data).encode())
-                            response = s.recv(1024).decode()
-                            print(f'Replica from {port}: {response}')
-                            logging.info(f'Replica from {port}: {response}')
-                    except Exception as e:
-                        print(f"Error replicating request: {e}")
-                        logging.error(f"Error replicating request: {e}")
+        except Exception as e:
+            print(f"Error handling client: {e}")
 
-            except Exception as e:
-                print(f"Error handling client: {e}")
-
-            finally:
-                # Cerrar el socket del cliente
-                client_socket.close()
+        finally:
+            # Cerrar el socket del cliente
+            client_socket.close()
 
     def consumir_peticion(self):
         """
         Consume la petición de la cola de peticiones.
         Mandar a llamar la trnasición de la máquina de estados y escribe un log.
         """
-        with self.lock:
-            try:
-                # Deserializar datos
-                data = json.loads(self.buffer.get(block=True, timeout=1))
-                print(f'Consuming request: {data}')
-                # Log request
-                logging.info(f'Consuming request: {data}')
+        try:
+            # Deserializar datos
+            data = json.dumps(self.buffer.get(block=True, timeout=1))
+            print(f'Consuming request: {data}')
+            # Log request
+            logging.info(f'Consuming request: {data}')
+            
+            # Procesar los datos
+            response = self.sm.transition(data)
+            print(f'Response: {response}')
+            # Log response
+            logging.info(f'Response: {response}')
 
-                # Procesar los datos
-                response = self.sm.transition(data)
-                print(f'Response: {response}')
-                # Log response
-                logging.info(f'Response: {response}')
+            if (response):
+                # Replicar petición a otros servidores
+                self.replicar_peticion(data)
+                print('Replicating request')
+                logging.info('Replicating request')
 
-            except queue.Empty:
-                print("Buffer vacío, esperando")
-            except Exception as e:
-                print(f"Error consuming request: {e}")
+        except queue.Empty:
+            print("Buffer vacío, esperando")
+            logging.info("Buffer vacío, esperando")
+        except Exception as e:
+            print(f"Error consuming request: {e}")
+            logging.error(f"Error consuming request: {e}")
 
     def start(self):
         """
