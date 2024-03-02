@@ -9,6 +9,25 @@ from SM import StateMachine
 from concurrent.futures import ThreadPoolExecutor
 from configs import SERVER_ADDRESS, SERVER_PORTS
 
+"""
+Tabla de registros:
+{
+    [host, port]: {
+        data
+    }
+}
+
+Datagrama
+
+{
+    "operation":{
+        "action":
+        "key":
+        "value":
+    }
+}
+
+"""
 logging.basicConfig(filename='logs.log', level=logging.INFO)
 class Peer(Server):
     """
@@ -26,6 +45,7 @@ class Peer(Server):
         super().__init__(host, port)
         self.sm = StateMachine()
         self.lock = threading.Lock() # lock para zonas críticas
+        self.registros = {} # registros de peticiones || TODO: reemplazar con BD potencialmente
 
     def replicar_peticion(self, data):
         """
@@ -38,7 +58,7 @@ class Peer(Server):
                 try:
                     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         s.connect((SERVER_ADDRESS, port))
-                        s.sendall(json.dumps(data).encode())
+                        s.sendall(data.encode())
                         response = s.recv(1024).decode()
                         print(f'Replica from {port}: {response}')
                         logging.info(f'Replica from {port}: {response}')
@@ -46,13 +66,16 @@ class Peer(Server):
                     print(f"Error replicating request: {e}")
                     logging.error(f"Error replicating request: {e}")
 
-    def handle_client(self, client_socket):
+    def handle_client(self, client_socket : socket.socket):
         """
         Gestiona la conexión con un cliente. Recibe los datos del cliente, los procesa y envía una respuesta.
 
         Args:
             client_socket (tuple): (host, port)
         """
+        # Validar si la petición ha llegado con anterioridad
+        #if (client_socket., client_address) in self.registros:
+        #    return
         try:
             # Recibir datos del cliente
             data = client_socket.recv(1024).decode().strip()
@@ -65,6 +88,14 @@ class Peer(Server):
             # Insertar datos en el buffer
             self.buffer.put(data, block=True, timeout=1)
             logging.info(f'Data into queue: {data}')
+
+            # Deserializar datos
+            data = json.dumps(data)
+
+            # Replicar petición a otros servidores
+            self.replicar_peticion(data)
+            print('Replicating request')
+            logging.info('Replicating request')
 
         except Exception as e:
             print(f"Error handling client: {e}")
@@ -84,18 +115,12 @@ class Peer(Server):
             print(f'Consuming request: {data}')
             # Log request
             logging.info(f'Consuming request: {data}')
-            
+
             # Procesar los datos
             response = self.sm.transition(data)
             print(f'Response: {response}')
             # Log response
             logging.info(f'Response: {response}')
-
-            if (response):
-                # Replicar petición a otros servidores
-                self.replicar_peticion(data)
-                print('Replicating request')
-                logging.info('Replicating request')
 
         except queue.Empty:
             print("Buffer vacío, esperando")
@@ -124,8 +149,8 @@ class Peer(Server):
                     print(f'Client connected from {client_address}')
                     logging.info(f'Client connected from {client_address}')
                     # Crear un nuevo hilo para manejar la interconexión
-                    client_thread = threading.Thread(target=self.handle_client, args=(client_socket,))
-                    producer_thread = threading.Thread(target=self.consumir_peticion)
+                    client_thread = threading.Thread(target=self.handle_client, args=(client_socket,)) # reads
+                    producer_thread = threading.Thread(target=self.consumir_peticion)                  # writes
                     # Iniciar el hilo
                     client_thread.start()
                     producer_thread.start()

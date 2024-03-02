@@ -14,7 +14,7 @@ class StateMachine:
         Transitions the state machine
 
         Args:
-            data (dictionary): data to transition the state machine
+            data (string): data to transition the state machine
 
         Returns:
             Bool: response from the state machine
