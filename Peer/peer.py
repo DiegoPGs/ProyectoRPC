@@ -84,18 +84,25 @@ class Peer(Server):
 
             # Encode data
             data = json.loads(data.encode())
+            print(f'Data: {data}')
 
-            # Insertar datos en el buffer
-            self.buffer.put(data, block=True, timeout=1)
-            logging.info(f'Data into queue: {data}')
+            ttl = data.get('ttl')
+            print(f'TTL: {ttl}')
 
-            # Deserializar datos
-            data = json.dumps(data)
+            if ttl > 0:
+                data['ttl'] = ttl - 1
 
-            # Replicar petición a otros servidores
-            self.replicar_peticion(data)
-            print('Replicating request')
-            logging.info('Replicating request')
+                # Insertar datos en el buffer
+                self.buffer.put(data, block=True, timeout=1)
+                logging.info(f'Data into queue: {data}')
+
+                # Deserializar datos
+                data = json.dumps(data)
+
+                # Replicar petición a otros servidores
+                self.replicar_peticion(data)
+                print('Replicating request')
+                logging.info('Replicating request')
 
         except Exception as e:
             print(f"Error handling client: {e}")
