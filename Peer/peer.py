@@ -37,6 +37,8 @@ class Peer(Server):
     uno para escuchar solicitudes y replicarlas a otros servidores
     otro para realizar la transición de la operación en la petición para la máquina de estados.
     """
+    # contador de lamport
+    count : int = 0
     # zonas críticas para el servidor
     buffer = queue.Queue(maxsize=7) # buffer intermedio
     # fin de zonas críticas
