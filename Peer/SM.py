@@ -7,6 +7,8 @@ class StateMachine:
     def __init__(self):
         # dictionary of states
         self.data = {}
+        # logging
+        logging.info(f'[StateMachine] StateMachine initialized')
 
     # methods
     def transition(self, data):
@@ -36,7 +38,7 @@ class StateMachine:
                 return self.update(key, value, operation)
         except Exception as e:
             print(f'Error: {e}')
-            logging.error(f'Error: {e}')
+            logging.error(f'[StateMachine] Error: {e}')
             return False
 
     def get(self, key):
@@ -119,8 +121,9 @@ class StateMachine:
         accion = actions.get(action)
 
         if accion:
+            logging.info(f'[StateMachine] action {action} and value {value}') 
             accion(key, value)
-            logging.info(f'Key {key} updated to {self.get(key)} with action {action} and value {value}')
+            logging.info(f'[StateMachine] Key {key} updated to {self.get(key)}')
             return True
         else:
             print(f'Invalid action: {action}')

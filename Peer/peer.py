@@ -48,6 +48,13 @@ class Peer(Server):
         self.sm = StateMachine()
         self.lock = threading.Lock() # lock para zonas críticas
         self.registros = {} # registros de peticiones || TODO: reemplazar con BD potencialmente
+        logging.info(f'[Peer] Peer inicializado en {host}:{port}')
+    
+    def __del__(self) -> None:
+        """
+        Destructor de la clase.
+        """
+        logging.info(f'[Peer] Peer finalizado en {self.host}:{self.port}')
 
     def replicar_peticion(self, data):
         """
@@ -63,10 +70,10 @@ class Peer(Server):
                         s.sendall(data.encode())
                         response = s.recv(1024).decode()
                         print(f'Replica from {port}: {response}')
-                        logging.info(f'Replica from {port}: {response}')
+                        logging.info(f'[Peer] Replica from {port} Respuesta: {response}')
                 except Exception as e:
                     print(f"Error replicating request: {e}")
-                    logging.error(f"Error replicating request: {e}")
+                    logging.error(f"[Peer] Error replicating request: {e}")
 
     def handle_client(self, client_socket : socket.socket):
         """
@@ -82,7 +89,7 @@ class Peer(Server):
             # Recibir datos del cliente
             data = client_socket.recv(1024).decode().strip()
             print(f'Data received from client: {data}')
-            logging.info(f'Data received from client: {data}')
+            logging.info(f'[Peer] Data received from client: {data}')
 
             # Encode data
             data = json.loads(data.encode())
@@ -96,15 +103,15 @@ class Peer(Server):
 
                 # Insertar datos en el buffer
                 self.buffer.put(data, block=True, timeout=1)
-                logging.info(f'Data into queue: {data}')
+                logging.info(f'[Peer] Data into queue: {data}')
 
                 # Deserializar datos
                 data = json.dumps(data)
 
+                print('Replicating request')
+                logging.info('[Peer] Replicating request')
                 # Replicar petición a otros servidores
                 self.replicar_peticion(data)
-                print('Replicating request')
-                logging.info('Replicating request')
 
         except Exception as e:
             print(f"Error handling client: {e}")
@@ -123,20 +130,20 @@ class Peer(Server):
             data = json.dumps(self.buffer.get(block=True, timeout=1))
             print(f'Consuming request: {data}')
             # Log request
-            logging.info(f'Consuming request: {data}')
+            logging.info(f'[Peer] Consuming request: {data}')
 
             # Procesar los datos
             response = self.sm.transition(data)
             print(f'Response: {response}')
             # Log response
-            logging.info(f'Response: {response}')
+            logging.info(f'[Peer] Response: {response}')
 
         except queue.Empty:
             print("Buffer vacío, esperando")
-            logging.info("Buffer vacío, esperando")
+            logging.info("[Peer] Buffer vacío, esperando")
         except Exception as e:
             print(f"Error consuming request: {e}")
-            logging.error(f"Error consuming request: {e}")
+            logging.error(f"[Peer] Error consuming request: {e}")
 
     def start(self):
         """
@@ -148,7 +155,7 @@ class Peer(Server):
         server_socket.bind((self.host, self.port))
         server_socket.listen(7)  # Esperar por conexiones entrantes, hasta 7 en cola
         print(f'Server listening on {self.host}:{self.port}')
-        logging.info(f'Server listening on {self.host}:{self.port}')
+        logging.info(f'[Peer] Server listening on {self.host}:{self.port}')
 
         try:
             with ThreadPoolExecutor(max_workers=10) as executor:
@@ -156,7 +163,7 @@ class Peer(Server):
                     # Aceptar conexiones entrantes
                     client_socket, client_address = server_socket.accept()
                     print(f'Client connected from {client_address}')
-                    logging.info(f'Client connected from {client_address}')
+                    logging.info(f'[Peer] Client connected from {client_address}')
                     # Crear un nuevo hilo para manejar la interconexión
                     client_thread = threading.Thread(target=self.handle_client, args=(client_socket,)) # reads
                     producer_thread = threading.Thread(target=self.consumir_peticion)                  # writes
@@ -195,7 +202,7 @@ class Peer(Server):
 
         except Exception as e:
             print(f"Error: {e}")
-            logging.error(f"Error: {e}")
+            logging.error(f"[Peer] Error: {e}")
 
         finally:
             # Close the socket
