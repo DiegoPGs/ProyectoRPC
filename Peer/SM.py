@@ -8,7 +8,11 @@ class StateMachine:
         # dictionary of states
         self.data = {}
         # logging
-        logging.info(f'[StateMachine] StateMachine initialized')
+        logging.info(f'[StateMachine] StateMachine initialized with data {self.data} and obj_id {id(self)}')
+
+    def __del__(self):
+        # logging
+        logging.info(f'[StateMachine] StateMachine deleted with data {self.data} and obj_id {id(self)}')
 
     # methods
     def transition(self, data):
@@ -37,7 +41,7 @@ class StateMachine:
                 operation = data.get('action')
                 return self.update(key, value, operation)
         except Exception as e:
-            print(f'Error: {e}')
+            print(f'[StateMachine] Error: {e}')
             logging.error(f'[StateMachine] Error: {e}')
             return False
 

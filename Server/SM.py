@@ -19,7 +19,7 @@ class StateMachine:
         Returns:
             Bool: response from the state machine
         """
-        print(f'Data received: {data}')
+        print(f'[SM] Data received: {data}')
 
         try:
             key = data.get('key')
@@ -32,8 +32,8 @@ class StateMachine:
                 operation = data.get('operation')
                 return self.update(key, value, operation)
         except Exception as e:
-            print(f'Error: {e}')
-            logging.error(f'Error: {e}')
+            print(f'[SM] Error: {e}')
+            logging.error(f'[SM] Error: {e}')
             return False
 
     def get(self, key):
@@ -117,8 +117,8 @@ class StateMachine:
 
         if action:
             action(key, value)
-            logging.info(f'Key {key} updated to {self.get(key)} with operation {operation} and value {value}')
+            logging.info(f'[SM] Key {key} updated to {self.get(key)} with operation {operation} and value {value}')
             return True
         else:
-            print(f'Invalid operation: {operation}')
+            print(f'[SM] Invalid operation: {operation}')
             return False

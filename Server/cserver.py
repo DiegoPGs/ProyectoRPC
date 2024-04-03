@@ -39,8 +39,8 @@ class ConcurrentStateMachineServer(Server):
                         s.connect((SERVER_ADDRESS, port))
                         s.sendall(json.dumps(data))
                         response = s.recv(1024).decode()
-                        print(f'Replica from {port}: {response}')
-                        logging.info(f'Replica from {port}: {response}')
+                        print(f'[CServer] Replica from {port}: {response}')
+                        logging.info(f'[CServer] Replica from {port}: {response}')
                 except Exception as e:
                     print(f"Error replicating request: {e}")
 
@@ -56,17 +56,17 @@ class ConcurrentStateMachineServer(Server):
                 # Recibir datos del cliente
                 data = client_socket.recv(1024).decode().strip()
                 print(f'Data received from client: {data}')
-                logging.info(f'Data received from client: {data}')
+                logging.info(f'[CServer] Data received from client: {data}')
 
                 # Insertar datos en el buffer
                 self.buffer.put(data, block=True, timeout=1)
-                logging.info(f'Data into queue: {data}')
+                logging.info(f'[CServer] Data into queue: {data}')
 
                 # Replicar petición a otros servidores
                 self.replicar_peticion(data)
 
             except Exception as e:
-                print(f"Error handling client: {e}")
+                print(f"[CServer] Error handling client: {e}")
 
             finally:
                 # Cerrar el socket del cliente
@@ -81,20 +81,20 @@ class ConcurrentStateMachineServer(Server):
             try:
                 # Deserializar datos
                 data = json.loads(self.buffer.get(block=True, timeout=1))
-                print(f'Consuming request: {data}')
+                print(f'[CServer] Consuming request: {data}')
                 # Log request
-                logging.info(f'Consuming request: {data}')
+                logging.info(f'[CServer] Consuming request: {data}')
 
                 # Procesar los datos
                 response = self.sm.transition(data)
-                print(f'Response: {response}')
+                print(f'[CServer] Response: {response}')
                 # Log response
-                logging.info(f'Response: {response}')
+                logging.info(f'[CServer] Response: {response}')
 
             except queue.Empty:
-                print("Buffer vacío, esperando")
+                print("[CServer] Buffer vacío, esperando")
             except Exception as e:
-                print(f"Error consuming request: {e}")
+                print(f"[CServer] Error consuming request: {e}")
 
     def start(self):
         """
@@ -105,14 +105,14 @@ class ConcurrentStateMachineServer(Server):
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((self.host, self.port))
         server_socket.listen(5)  # Esperar por conexiones entrantes, hasta 5 en cola
-        print(f'Server listening on {self.host}:{self.port}')
+        print(f'[CServer] Server listening on {self.host}:{self.port}')
 
         with ThreadPoolExecutor(max_workers=10) as executor:
             while True:
                 # Aceptar conexiones entrantes
                 client_socket, client_address = server_socket.accept()
-                print(f'Client connected from {client_address}')
-                logging.info(f'Client connected from {client_address}')
+                print(f'[CServer] Client connected from {client_address}')
+                logging.info(f'[CServer] Client connected from {client_address}')
                 # Crear un nuevo hilo para manejar la interconexión
                 client_thread = threading.Thread(target=self.handle_client, args=(client_socket,))
                 producer_thread = threading.Thread(target=self.consumir_peticion)

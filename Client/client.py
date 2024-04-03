@@ -47,11 +47,11 @@ class Client:
             response = client_socket.recv(1024).decode()
 
             # Print the response
-            print(f"Response from server: {response}")
+            print(f"[Client] Response from server: {response}")
 
         except Exception as e:
             print(f"Error: {e}")
-            logging.error(f"Error: {e}")
+            logging.error(f"[Client] Error: {e}")
 
         finally:
             # Close the socket
@@ -73,7 +73,8 @@ def main():
     # Send a request to the server
     response = client.send_request(data)
 
-    print(f"Response: {response}")
+    if response:
+        print(f"[Client] Response: {response}")
 
 if __name__ == '__main__':
     main()

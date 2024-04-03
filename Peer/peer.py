@@ -55,6 +55,7 @@ class Peer(Server):
         Destructor de la clase.
         """
         logging.info(f'[Peer] Peer finalizado en {self.host}:{self.port}')
+        print(f'[Peer] Peer finalizado en {self.host}:{self.port}')
 
     def replicar_peticion(self, data):
         """
@@ -73,10 +74,10 @@ class Peer(Server):
                         s.connect((SERVER_ADDRESS, port))
                         s.sendall(data.encode())
                         response = s.recv(1024).decode()
-                        print(f'Replica from {port}: {response}')
+                        print(f'[Peer] Replica from {port}: {response}')
                         logging.info(f'[Peer] Replica from {port} Respuesta: {response}')
                 except Exception as e:
-                    print(f"Error replicating request: {e}")
+                    print(f"[Peer] Error replicating request: {e}")
                     logging.error(f"[Peer] Error replicating request: {e}")
 
     def handle_client(self, client_socket : socket.socket):
@@ -92,15 +93,15 @@ class Peer(Server):
         try:
             # Recibir datos del cliente
             data = client_socket.recv(1024).decode().strip()
-            print(f'Data received from client: {data}')
+            print(f'[Peer] Data received from client: {data}')
             logging.info(f'[Peer] Data received from client: {data}')
 
             # Encode data
             data = json.loads(data.encode())
-            print(f'Data: {data}')
+            print(f'[Peer] Data: {data}')
 
             ttl = data.get('ttl')
-            print(f'TTL: {ttl}')
+            print(f'[Peer] TTL: {ttl}')
 
             if ttl > 0:
                 data['ttl'] = ttl - 1
@@ -158,7 +159,7 @@ class Peer(Server):
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((self.host, self.port))
         server_socket.listen(7)  # Esperar por conexiones entrantes, hasta 7 en cola
-        print(f'Server listening on {self.host}:{self.port}')
+        print(f'[Peer] Listening on {self.host}:{self.port}')
         logging.info(f'[Peer] Server listening on {self.host}:{self.port}')
 
         try:
@@ -166,7 +167,7 @@ class Peer(Server):
                 while True:
                     # Aceptar conexiones entrantes
                     client_socket, client_address = server_socket.accept()
-                    print(f'Client connected from {client_address}')
+                    print(f'[Peer] Client connected from {client_address}')
                     logging.info(f'[Peer] Client connected from {client_address}')
                     # Crear un nuevo hilo para manejar la interconexión
                     client_thread = threading.Thread(target=self.handle_client, args=(client_socket,)) # reads
@@ -202,10 +203,10 @@ class Peer(Server):
             response = client_socket.recv(1024).decode()
 
             # Print the response
-            print(f"Response from server: {response}")
+            print(f"[Peer] Response from server: {response}")
 
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"[Peer] Error: {e}")
             logging.error(f"[Peer] Error: {e}")
 
         finally:
