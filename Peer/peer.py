@@ -4,10 +4,11 @@ import socket
 import json
 import logging
 import queue
+import time
 from server import Server
 from SM import StateMachine
 from concurrent.futures import ThreadPoolExecutor
-from configs import SERVER_ADDRESS, SERVER_PORTS
+from configs import SERVER_ADDRESS, SERVER_PORTS, TIMEOUT
 
 """
 Tabla de registros:
@@ -133,7 +134,7 @@ class Peer(Server):
         try:
             # Deserializar datos
             data = json.dumps(self.buffer.get(block=True, timeout=1))
-            print(f'Consuming request: {data}')
+            print(f'[Peer] Consuming request: {data}')
             # Log request
             logging.info(f'[Peer] Consuming request: {data}')
 
@@ -144,8 +145,12 @@ class Peer(Server):
             logging.info(f'[Peer] Response: {response}')
 
         except queue.Empty:
-            print("Buffer vacío, esperando")
+            print("[Peer] Buffer vacío, esperando")
             logging.info("[Peer] Buffer vacío, esperando")
+            # timeout
+            #time.sleep(TIMEOUT)
+            # retry
+            #self.consumir_peticion()
         except Exception as e:
             print(f"Error consuming request: {e}")
             logging.error(f"[Peer] Error consuming request: {e}")
