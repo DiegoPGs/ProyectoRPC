@@ -128,3 +128,35 @@ class StateMachine:
         else:
             print(f'Invalid action: {action}')
             return False
+
+    def exportar(self):
+        """
+        Exporta la máquina de estados a un diccionario de datos.
+
+        Returns:
+            dict: diccionario de datos exportado
+        """
+        logging.info(f'[StateMachine] Exported StateMachine\tobj_id {id(self)}')
+        return self.data
+
+    def importar(self, data):
+        """
+        Importa un diccionario de datos a la máquina de estados.
+
+        Args:
+            data (dict): diccionario de datos a importar
+        """
+        logging.info(f'[StateMachine] Imported StateMachine\tobj_id {id(self)}')
+        self.data = data
+
+    def copiar(self):
+        """
+        Copia la máquina de estados.
+
+        Returns:
+            StateMachine: copia de la máquina de estados
+        """
+        logging.info(f'[StateMachine] Copied StateMachine\tobj_id {id(self)}')
+        sm = StateMachine()
+        sm.importar(self.exportar())
+        return sm

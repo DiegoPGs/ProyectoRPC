@@ -62,10 +62,14 @@ class Peer(Server):
 
         data (dict): Datos de la petición codificados.
         """
+        # Replicar una copia de la máquina de estados a compartir con los demás servidores
+        sm_copy = self.sm.copiar()
         # Replicar petición a otros servidores
         for port in set(SERVER_PORTS) - {self.port}: # Todos los servidores excepto el actual
                 try:
                     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                        # TODO: definir paquete de sm_copy aqui
+                        paquete = ...
                         s.connect((SERVER_ADDRESS, port))
                         s.sendall(data.encode())
                         response = s.recv(1024).decode()
