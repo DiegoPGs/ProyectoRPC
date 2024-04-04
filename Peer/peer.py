@@ -4,7 +4,6 @@ import socket
 import json
 import logging
 import queue
-import time
 from server import Server
 from SM import StateMachine
 from concurrent.futures import ThreadPoolExecutor
@@ -26,15 +25,10 @@ Datagrama
         "key":
         "value":
     }
+    timestamp: 0,
+    ttl: 0,
+    id: 0
 }
-
-{
-    "key": 0,
-    "value": 20.2,
-    "operation": "add",
-    "ttl": 0
-}
-
 """
 logging.basicConfig(filename='logs.log', level=logging.INFO)
 class Peer(Server):
@@ -46,9 +40,12 @@ class Peer(Server):
     otro para realizar la transición de la operación en la petición para la máquina de estados.
     """
     # zonas críticas para el servidor
-    buffer = queue.Queue(maxsize=7) # buffer intermedio
+    #buffer = queue.Queue(maxsize=7) # buffer intermedio
     # zonas criticas para el servidor en un priority queue
+    buffer = queue.PriorityQueue(maxsize=7) # buffer intermedio
     # fin de zonas críticas
+    # contador de respuestas recibidas
+    count : int = 0
 
     def __init__(self, host, port):
         super().__init__(host, port)
@@ -70,19 +67,55 @@ class Peer(Server):
 
         data (dict): Datos de la petición codificados.
         """
+        # Obtener el sello de tiempo de Lamport actual
+        timestamp = self.sm.count
+        print(f'[Peer] Timestamp: {timestamp}')
+        logging.info(f'[Peer] Timestamp: {timestamp}')
+
         # Replicar una copia de la máquina de estados a compartir con los demás servidores
-        sm_copy = self.sm.copiar()
+        sm_copy = self.sm.exportar()
+        print(f'[Peer] StateMachine copy: {sm_copy}')
+        logging.info(f'[Peer] StateMachine copy: {sm_copy}')
+
+        # Construir el mensaje de replicación, incluyendo el sello de tiempo
+        d = data.get('operation')
+        print(f'[Peer] Replicating operation: {d}')
+        logging.info(f'[Peer] Replicating operation: {d}')
+        
+        message = {
+            'operation': {
+                'action': d.get('action'),
+                'key': d.get('key'),
+                'value': d.get('value'),
+            },
+            'timestamp': timestamp,
+            'ttl': data.get('ttl')
+            #'sm': sm_copy
+        }
+
+        # Serializar el mensaje
+        message = json.dumps(message)
+
+        # Debuging
+        print(f'[Peer] Replicating message: {message}')
+        logging.info(f'[Peer] Replicating message: {message}')
+
         # Replicar petición a otros servidores
         for port in set(SERVER_PORTS) - {self.port}: # Todos los servidores excepto el actual
                 try:
                     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                        # TODO: definir paquete de sm_copy aqui
-                        paquete = ...
                         s.connect((SERVER_ADDRESS, port))
-                        s.sendall(data.encode())
+                        #s.sendall(data.encode())
+                        s.sendall(message.encode())
                         response = s.recv(1024).decode()
                         print(f'[Peer] Replica from {port}: {response}')
                         logging.info(f'[Peer] Replica from {port} Respuesta: {response}')
+
+                        #if response:
+                        # Aumentar contador de respuestas recibidas
+                        #self.count += 1
+                        #print(f'[Peer] Peticiones recibidas: {self.count}')
+                        #logging.info(f'[Peer] Peticiones recibidas: {self.count}')
                 except Exception as e:
                     print(f"[Peer] Error replicating request: {e}")
                     logging.error(f"[Peer] Error replicating request: {e}")
@@ -98,6 +131,11 @@ class Peer(Server):
         #if (client_socket., client_address) in self.registros:
         #    return
         try:
+            # Aumentar contador de respuestas recibidas
+            self.count += 1
+            print(f'[Peer] Peticiones recibidas: {self.count}')
+            logging.info(f'[Peer] Peticiones recibidas: {self.count}')
+
             # Recibir datos del cliente
             data = client_socket.recv(1024).decode().strip()
             print(f'[Peer] Data received from client: {data}')
@@ -120,13 +158,16 @@ class Peer(Server):
                 # Deserializar datos
                 data = json.dumps(data)
 
-                print('Replicating request')
+                # Convertir a diccionario
+                data = json.loads(data)
+
+                print('[Peer] Replicating request')
                 logging.info('[Peer] Replicating request')
                 # Replicar petición a otros servidores
                 self.replicar_peticion(data)
 
         except Exception as e:
-            print(f"Error handling client: {e}")
+            print(f"[Peer] Error handling client: {e}")
 
         finally:
             # Cerrar el socket del cliente
@@ -144,19 +185,19 @@ class Peer(Server):
             # Log request
             logging.info(f'[Peer] Consuming request: {data}')
 
+            # Obtener timestamp
+            #timestamp = data.get('timestamp')
+
             # Procesar los datos
             response = self.sm.transition(data)
-            print(f'Response: {response}')
+            print(f'[Peer] Response: {response}')
+
             # Log response
             logging.info(f'[Peer] Response: {response}')
 
         except queue.Empty:
             print("[Peer] Buffer vacío, esperando")
             logging.info("[Peer] Buffer vacío, esperando")
-            # timeout
-            #time.sleep(TIMEOUT)
-            # retry
-            #self.consumir_peticion()
         except Exception as e:
             print(f"Error consuming request: {e}")
             logging.error(f"[Peer] Error consuming request: {e}")

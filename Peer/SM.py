@@ -1,4 +1,5 @@
 import logging
+import json
 
 # Set up logger
 logging.basicConfig(filename='logs.log', level=logging.INFO)
@@ -28,21 +29,32 @@ class StateMachine:
         Returns:
             Bool: response from the state machine
         """
-        print(f'Data received: {data}')
+        print(f'[StateMachine] Data received: {data}')
 
         try:
             # string to dictionary
             data = eval(data)
+            print(f'[StateMachine] Data received: {data}')
+
+            # update lamport counter
+            timestamp = data.get('timestamp')
+
+            oper_data = data.get('operation')
+            print(f'[StateMachine] Operation: {oper_data}')
+            #print(f'[StateMachine] Data: {data.get('operation')}')
+            #print(f'[StateMachine] Data: {data['operation']['key']}')
             # get key and value
-            key = data.get('key')
-            value = data.get('value')
-            if data.get('action') is None:
+            key = oper_data.get('key')
+            print(f'[StateMachine] Key: {key}')
+            value = oper_data.get('value')
+            print(f'[StateMachine] Value: {value}')
+            if oper_data.get('action') is None:
                 # read operation
                 return self.get(key)
             else:
                 # update operation
-                operation = data.get('action')
-                return self.update(key, value, operation)
+                operation = oper_data.get('action')
+                return self.update(key, value, operation, timestamp)
         except Exception as e:
             print(f'[StateMachine] Error: {e}')
             logging.error(f'[StateMachine] Error: {e}')
@@ -107,7 +119,7 @@ class StateMachine:
         """
         return self.get(key)
 
-    def update(self, key, value, action):
+    def update(self, key, value, action, timestamp):
         """
         Método remoto para actualizar el valor de una clave.
         Similar a RMI en Java.
@@ -131,9 +143,10 @@ class StateMachine:
             logging.info(f'[StateMachine] action {action} and value {value}') 
             accion(key, value)
             logging.info(f'[StateMachine] Key {key} updated to {self.get(key)}')
+            self.count = max(self.count, timestamp) + 1
             return True
         else:
-            print(f'Invalid action: {action}')
+            print(f'[StateMachine] Invalid action: {action}')
             return False
 
     def exportar(self):
@@ -156,14 +169,41 @@ class StateMachine:
         logging.info(f'[StateMachine] Imported StateMachine\tobj_id {id(self)}')
         self.data = data
 
-    def copiar(self):
+    # Method that replicates the StateMachine object using Lamport algorithm
+    def replicate(self, data):
         """
-        Copia la máquina de estados.
+        Replicates the StateMachine object using Lamport algorithm
 
-        Returns:
-            StateMachine: copia de la máquina de estados
+        Args:
+            data (dict): data to replicate the StateMachine object
         """
-        logging.info(f'[StateMachine] Copied StateMachine\tobj_id {id(self)}')
-        sm = StateMachine()
-        sm.importar(self.exportar())
-        return sm
+        # Get the current Lamport timestamp
+        self.count += 1
+        print(f'[StateMachine] Timestamp: {self.count}')
+        logging.info(f'[StateMachine] Timestamp: {self.count}')
+
+        # Replicate a copy of the state machine to share with the other servers
+        sm_copy = self.exportar()
+        print(f'[StateMachine] StateMachine copy: {sm_copy}')
+        logging.info(f'[StateMachine] StateMachine copy: {sm_copy}')
+
+        # Build the replication message, including the timestamp
+        d = data.get('operation')
+        print(f'[StateMachine] Replicating operation: {d}')
+        logging.info(f'[StateMachine] Replicating operation: {d}')
+        message = {
+            'operation': {
+                'action': d.get('action'),
+                'key': d.get('key'),
+                'value': d.get('value'),
+            },
+            'timestamp': self.count,
+            'ttl': data.get('ttl')
+            #'sm': sm_copy
+        }
+
+        # Serialize the message
+        message = json.dumps(message)
+        logging.info(f'[StateMachine] Replication message: {message}')
+        print(f'[StateMachine] Replication message: {message}')
+        return message
