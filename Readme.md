@@ -21,7 +21,5 @@ En proyectos posteriores se deberá tener múltiples servidores que replican el 
 
 
 #### Instruciones para correr proyecto
-python Server
-python Client/client.py
-
-Ejecutar client.py para cada operación.
+python Peer
+python Client
