@@ -13,7 +13,9 @@ def main():
         {'operation':{'action':'set','key':0,'value':10.1},'timestamp':0,'ttl':1},
         {'operation':{'action':'add','key':0,'value':20.2},'timestamp':0,'ttl':1},
         {'operation':{'action':'mult','key':0,'value':30.3},'timestamp':0,'ttl':1},
-        {'operation':{'action':'sum','key':0,'value':0},'timestamp':0,'ttl':1}
+        {'operation':{'action':'set','key':1,'value':20},'timestamp':2,'ttl':1},
+        {'operation':{'action':'sum','key':1,'value':10},'timestamp':0,'ttl':1},
+        {'operation':{'action':'mult','key':1,'value':2},'timestamp':0,'ttl':1}
     ]
 
     """
