@@ -28,6 +28,13 @@ Datagrama
     }
 }
 
+{
+    "key": 0,
+    "value": 20.2,
+    "operation": "add",
+    "ttl": 0
+}
+
 """
 logging.basicConfig(filename='logs.log', level=logging.INFO)
 class Peer(Server):
@@ -38,10 +45,9 @@ class Peer(Server):
     uno para escuchar solicitudes y replicarlas a otros servidores
     otro para realizar la transición de la operación en la petición para la máquina de estados.
     """
-    # contador de lamport
-    count : int = 0
     # zonas críticas para el servidor
     buffer = queue.Queue(maxsize=7) # buffer intermedio
+    # zonas criticas para el servidor en un priority queue
     # fin de zonas críticas
 
     def __init__(self, host, port):

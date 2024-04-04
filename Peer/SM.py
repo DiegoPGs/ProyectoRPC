@@ -9,6 +9,9 @@ class StateMachine:
         self.data = {}
         # logging
         logging.info(f'[StateMachine] StateMachine initialized with data {self.data} and obj_id {id(self)}')
+    
+    # contador de lamport
+    count : int = 0
 
     def __del__(self):
         # logging
