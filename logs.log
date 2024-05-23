@@ -1,0 +1,302 @@
+INFO:root:[StateMachine] StateMachine initialized with data {} and obj_id 2179389697168
+INFO:root:[Peer] Peer inicializado en localhost:8080
+INFO:root:[StateMachine] StateMachine initialized with data {} and obj_id 2179392310352
+INFO:root:[Peer] Peer inicializado en localhost:8081
+INFO:root:[StateMachine] StateMachine initialized with data {} and obj_id 2179392311440
+INFO:root:[Peer] Peer inicializado en localhost:8082
+INFO:root:[Peer] Server listening on localhost:8082
+INFO:root:[Peer] Server listening on localhost:8080
+INFO:root:[Peer] Server listening on localhost:8081
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54701)
+INFO:root:[Peer] Peticiones recibidas: 1
+INFO:root:[Peer] Data received from client: {"operation": {"action": "set", "key": 0, "value": 10.1}, "timestamp": 0, "ttl": 1}
+INFO:root:[Peer] Data into queue: {'operation': {'action': 'set', 'key': 0, 'value': 10.1}, 'timestamp': 0, 'ttl': 0}
+INFO:root:[Peer] Consuming request: {"operation": {"action": "set", "key": 0, "value": 10.1}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Replicating request
+INFO:root:[Peer] Timestamp: 0
+INFO:root:[StateMachine] Exported StateMachine	obj_id 2179389697168
+INFO:root:[Peer] StateMachine copy: {}
+INFO:root:[StateMachine] action set and value 10.1
+INFO:root:[StateMachine] Key 0 updated to 10.1
+INFO:root:[Peer] Replicating operation: {'action': 'set', 'key': 0, 'value': 10.1}
+INFO:root:[Peer] Response: True
+INFO:root:[Peer] Replicating message: {"operation": {"action": "set", "key": 0, "value": 10.1}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54702)
+INFO:root:[Peer] Peticiones recibidas: 1
+INFO:root:[Peer] Data received from client: {"operation": {"action": "set", "key": 0, "value": 10.1}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Replica from 8081 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54703)
+INFO:root:[Peer] Peticiones recibidas: 1
+INFO:root:[Peer] Data received from client: {"operation": {"action": "set", "key": 0, "value": 10.1}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Replica from 8082 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54704)
+INFO:root:[Peer] Peticiones recibidas: 2
+INFO:root:[Peer] Data received from client: {"operation": {"action": "add", "key": 0, "value": 20.2}, "timestamp": 0, "ttl": 1}
+INFO:root:[Peer] Data into queue: {'operation': {'action': 'add', 'key': 0, 'value': 20.2}, 'timestamp': 0, 'ttl': 0}
+INFO:root:[Peer] Replicating request
+INFO:root:[Peer] Consuming request: {"operation": {"action": "add", "key": 0, "value": 20.2}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Timestamp: 1
+INFO:root:[StateMachine] Exported StateMachine	obj_id 2179389697168
+INFO:root:[Peer] StateMachine copy: {0: 10.1}
+INFO:root:[Peer] Replicating operation: {'action': 'add', 'key': 0, 'value': 20.2}
+INFO:root:[Peer] Replicating message: {"operation": {"action": "add", "key": 0, "value": 20.2}, "timestamp": 1, "ttl": 0}
+INFO:root:[StateMachine] action add and value 20.2
+INFO:root:[StateMachine] Key 0 updated to 20.2
+INFO:root:[Peer] Response: True
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54705)
+INFO:root:[Peer] Peticiones recibidas: 2
+INFO:root:[Peer] Data received from client: {"operation": {"action": "add", "key": 0, "value": 20.2}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Replica from 8081 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54706)
+INFO:root:[Peer] Peticiones recibidas: 2
+INFO:root:[Peer] Data received from client: {"operation": {"action": "add", "key": 0, "value": 20.2}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Replica from 8082 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54707)
+INFO:root:[Peer] Peticiones recibidas: 3
+INFO:root:[Peer] Data received from client: {"operation": {"action": "mult", "key": 0, "value": 30.3}, "timestamp": 0, "ttl": 1}
+INFO:root:[Peer] Data into queue: {'operation': {'action': 'mult', 'key': 0, 'value': 30.3}, 'timestamp': 0, 'ttl': 0}
+INFO:root:[Peer] Consuming request: {"operation": {"action": "mult", "key": 0, "value": 30.3}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Replicating request
+INFO:root:[Peer] Timestamp: 1
+INFO:root:[StateMachine] Exported StateMachine	obj_id 2179389697168
+INFO:root:[Peer] StateMachine copy: {0: 10.1}
+INFO:root:[Peer] Replicating operation: {'action': 'mult', 'key': 0, 'value': 30.3}
+INFO:root:[StateMachine] action mult and value 30.3
+INFO:root:[StateMachine] Key 0 updated to 0
+INFO:root:[Peer] Replicating message: {"operation": {"action": "mult", "key": 0, "value": 30.3}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Response: True
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54708)
+INFO:root:[Peer] Peticiones recibidas: 3
+INFO:root:[Peer] Data received from client: {"operation": {"action": "mult", "key": 0, "value": 30.3}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Replica from 8081 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54709)
+INFO:root:[Peer] Peticiones recibidas: 3
+INFO:root:[Peer] Data received from client: {"operation": {"action": "mult", "key": 0, "value": 30.3}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Replica from 8082 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54710)
+INFO:root:[Peer] Peticiones recibidas: 4
+INFO:root:[Peer] Data received from client: {"operation": {"action": "set", "key": 1, "value": 20}, "timestamp": 2, "ttl": 1}
+INFO:root:[Peer] Data into queue: {'operation': {'action': 'set', 'key': 1, 'value': 20}, 'timestamp': 2, 'ttl': 0}
+INFO:root:[Peer] Replicating request
+INFO:root:[Peer] Consuming request: {"operation": {"action": "set", "key": 1, "value": 20}, "timestamp": 2, "ttl": 0}
+INFO:root:[Peer] Timestamp: 1
+INFO:root:[StateMachine] Exported StateMachine	obj_id 2179389697168
+INFO:root:[Peer] StateMachine copy: {0: 10.1}
+INFO:root:[Peer] Replicating operation: {'action': 'set', 'key': 1, 'value': 20}
+INFO:root:[Peer] Replicating message: {"operation": {"action": "set", "key": 1, "value": 20}, "timestamp": 1, "ttl": 0}
+INFO:root:[StateMachine] action set and value 20
+INFO:root:[StateMachine] Key 1 updated to 20
+INFO:root:[Peer] Response: True
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54711)
+INFO:root:[Peer] Peticiones recibidas: 4
+INFO:root:[Peer] Data received from client: {"operation": {"action": "set", "key": 1, "value": 20}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Replica from 8081 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54712)
+INFO:root:[Peer] Peticiones recibidas: 4
+INFO:root:[Peer] Data received from client: {"operation": {"action": "set", "key": 1, "value": 20}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Replica from 8082 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54713)
+INFO:root:[Peer] Peticiones recibidas: 5
+INFO:root:[Peer] Data received from client: {"operation": {"action": "sum", "key": 1, "value": 10}, "timestamp": 0, "ttl": 1}
+INFO:root:[Peer] Data into queue: {'operation': {'action': 'sum', 'key': 1, 'value': 10}, 'timestamp': 0, 'ttl': 0}
+INFO:root:[Peer] Consuming request: {"operation": {"action": "sum", "key": 1, "value": 10}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Replicating request
+INFO:root:[Peer] Timestamp: 3
+INFO:root:[StateMachine] Exported StateMachine	obj_id 2179389697168
+INFO:root:[Peer] StateMachine copy: {0: 10.1, 1: 20}
+INFO:root:[Peer] Response: False
+INFO:root:[Peer] Replicating operation: {'action': 'sum', 'key': 1, 'value': 10}
+INFO:root:[Peer] Replicating message: {"operation": {"action": "sum", "key": 1, "value": 10}, "timestamp": 3, "ttl": 0}
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54714)
+INFO:root:[Peer] Peticiones recibidas: 5
+INFO:root:[Peer] Data received from client: {"operation": {"action": "sum", "key": 1, "value": 10}, "timestamp": 3, "ttl": 0}
+INFO:root:[Peer] Replica from 8081 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54715)
+INFO:root:[Peer] Peticiones recibidas: 5
+INFO:root:[Peer] Data received from client: {"operation": {"action": "sum", "key": 1, "value": 10}, "timestamp": 3, "ttl": 0}
+INFO:root:[Peer] Replica from 8082 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54716)
+INFO:root:[Peer] Peticiones recibidas: 6
+INFO:root:[Peer] Data received from client: {"operation": {"action": "mult", "key": 1, "value": 2}, "timestamp": 0, "ttl": 1}
+INFO:root:[Peer] Data into queue: {'operation': {'action': 'mult', 'key': 1, 'value': 2}, 'timestamp': 0, 'ttl': 0}
+INFO:root:[Peer] Replicating request
+INFO:root:[Peer] Consuming request: {"operation": {"action": "mult", "key": 1, "value": 2}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Timestamp: 3
+INFO:root:[StateMachine] Exported StateMachine	obj_id 2179389697168
+INFO:root:[Peer] StateMachine copy: {0: 10.1, 1: 20}
+INFO:root:[Peer] Replicating operation: {'action': 'mult', 'key': 1, 'value': 2}
+INFO:root:[Peer] Replicating message: {"operation": {"action": "mult", "key": 1, "value": 2}, "timestamp": 3, "ttl": 0}
+INFO:root:[StateMachine] action mult and value 2
+INFO:root:[StateMachine] Key 1 updated to 0
+INFO:root:[Peer] Response: True
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54717)
+INFO:root:[Peer] Peticiones recibidas: 6
+INFO:root:[Peer] Data received from client: {"operation": {"action": "mult", "key": 1, "value": 2}, "timestamp": 3, "ttl": 0}
+INFO:root:[Peer] Replica from 8081 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 54718)
+INFO:root:[Peer] Peticiones recibidas: 6
+INFO:root:[Peer] Data received from client: {"operation": {"action": "mult", "key": 1, "value": 2}, "timestamp": 3, "ttl": 0}
+INFO:root:[Peer] Replica from 8082 Respuesta: 
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[StateMachine] StateMachine initialized with data {} and obj_id 2071164111184
+INFO:root:[Peer] Peer inicializado en localhost:8080
+INFO:root:[StateMachine] StateMachine initialized with data {} and obj_id 2071169948624
+INFO:root:[Peer] Peer inicializado en localhost:8081
+INFO:root:[StateMachine] StateMachine initialized with data {} and obj_id 2071169949520
+INFO:root:[Peer] Peer inicializado en localhost:8082
+INFO:root:[Peer] Server listening on localhost:8081
+INFO:root:[Peer] Server listening on localhost:8082
+INFO:root:[Peer] Server listening on localhost:8080
+INFO:root:[Peer] Client connected from ('127.0.0.1', 61998)
+INFO:root:[Peer] Peticiones recibidas: 1
+INFO:root:[Peer] Data received from client: {"operation": {"action": "set", "key": 0, "value": 10.1}, "timestamp": 0, "ttl": 1}
+INFO:root:[Peer] Data into queue: {'operation': {'action': 'set', 'key': 0, 'value': 10.1}, 'timestamp': 0, 'ttl': 0}
+INFO:root:[Peer] Consuming request: {"operation": {"action": "set", "key": 0, "value": 10.1}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Replicating request
+INFO:root:[Peer] Timestamp: 0
+INFO:root:[StateMachine] Exported StateMachine	obj_id 2071164111184
+INFO:root:[Peer] StateMachine copy: {}
+INFO:root:[StateMachine] action set and value 10.1
+INFO:root:[StateMachine] Key 0 updated to 10.1
+INFO:root:[Peer] Replicating operation: {'action': 'set', 'key': 0, 'value': 10.1}
+INFO:root:[Peer] Response: True
+INFO:root:[Peer] Replicating message: {"operation": {"action": "set", "key": 0, "value": 10.1}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Client connected from ('127.0.0.1', 61999)
+INFO:root:[Peer] Peticiones recibidas: 1
+INFO:root:[Peer] Data received from client: {"operation": {"action": "set", "key": 0, "value": 10.1}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Replica from 8081 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62000)
+INFO:root:[Peer] Peticiones recibidas: 1
+INFO:root:[Peer] Data received from client: {"operation": {"action": "set", "key": 0, "value": 10.1}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Replica from 8082 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62001)
+INFO:root:[Peer] Peticiones recibidas: 2
+INFO:root:[Peer] Data received from client: {"operation": {"action": "add", "key": 0, "value": 20.2}, "timestamp": 0, "ttl": 1}
+INFO:root:[Peer] Data into queue: {'operation': {'action': 'add', 'key': 0, 'value': 20.2}, 'timestamp': 0, 'ttl': 0}
+INFO:root:[Peer] Consuming request: {"operation": {"action": "add", "key": 0, "value": 20.2}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Replicating request
+INFO:root:[Peer] Timestamp: 1
+INFO:root:[StateMachine] Exported StateMachine	obj_id 2071164111184
+INFO:root:[Peer] StateMachine copy: {0: 10.1}
+INFO:root:[Peer] Replicating operation: {'action': 'add', 'key': 0, 'value': 20.2}
+INFO:root:[Peer] Replicating message: {"operation": {"action": "add", "key": 0, "value": 20.2}, "timestamp": 1, "ttl": 0}
+INFO:root:[StateMachine] action add and value 20.2
+INFO:root:[StateMachine] Key 0 updated to 20.2
+INFO:root:[Peer] Response: True
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62002)
+INFO:root:[Peer] Peticiones recibidas: 2
+INFO:root:[Peer] Data received from client: {"operation": {"action": "add", "key": 0, "value": 20.2}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Replica from 8081 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62003)
+INFO:root:[Peer] Peticiones recibidas: 2
+INFO:root:[Peer] Data received from client: {"operation": {"action": "add", "key": 0, "value": 20.2}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Replica from 8082 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62004)
+INFO:root:[Peer] Peticiones recibidas: 3
+INFO:root:[Peer] Data received from client: {"operation": {"action": "mult", "key": 0, "value": 30.3}, "timestamp": 0, "ttl": 1}
+INFO:root:[Peer] Data into queue: {'operation': {'action': 'mult', 'key': 0, 'value': 30.3}, 'timestamp': 0, 'ttl': 0}
+INFO:root:[Peer] Consuming request: {"operation": {"action": "mult", "key": 0, "value": 30.3}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Replicating request
+INFO:root:[Peer] Timestamp: 1
+INFO:root:[StateMachine] Exported StateMachine	obj_id 2071164111184
+INFO:root:[Peer] StateMachine copy: {0: 10.1}
+INFO:root:[Peer] Replicating operation: {'action': 'mult', 'key': 0, 'value': 30.3}
+INFO:root:[StateMachine] action mult and value 30.3
+INFO:root:[StateMachine] Key 0 updated to 0
+INFO:root:[Peer] Replicating message: {"operation": {"action": "mult", "key": 0, "value": 30.3}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Response: True
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62005)
+INFO:root:[Peer] Peticiones recibidas: 3
+INFO:root:[Peer] Data received from client: {"operation": {"action": "mult", "key": 0, "value": 30.3}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Replica from 8081 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62006)
+INFO:root:[Peer] Peticiones recibidas: 3
+INFO:root:[Peer] Data received from client: {"operation": {"action": "mult", "key": 0, "value": 30.3}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Replica from 8082 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62007)
+INFO:root:[Peer] Peticiones recibidas: 4
+INFO:root:[Peer] Data received from client: {"operation": {"action": "set", "key": 1, "value": 20}, "timestamp": 2, "ttl": 1}
+INFO:root:[Peer] Data into queue: {'operation': {'action': 'set', 'key': 1, 'value': 20}, 'timestamp': 2, 'ttl': 0}
+INFO:root:[Peer] Consuming request: {"operation": {"action": "set", "key": 1, "value": 20}, "timestamp": 2, "ttl": 0}
+INFO:root:[Peer] Replicating request
+INFO:root:[Peer] Timestamp: 1
+INFO:root:[StateMachine] Exported StateMachine	obj_id 2071164111184
+INFO:root:[Peer] StateMachine copy: {0: 10.1}
+INFO:root:[Peer] Replicating operation: {'action': 'set', 'key': 1, 'value': 20}
+INFO:root:[Peer] Replicating message: {"operation": {"action": "set", "key": 1, "value": 20}, "timestamp": 1, "ttl": 0}
+INFO:root:[StateMachine] action set and value 20
+INFO:root:[StateMachine] Key 1 updated to 20
+INFO:root:[Peer] Response: True
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62008)
+INFO:root:[Peer] Peticiones recibidas: 4
+INFO:root:[Peer] Data received from client: {"operation": {"action": "set", "key": 1, "value": 20}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Replica from 8081 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62009)
+INFO:root:[Peer] Peticiones recibidas: 4
+INFO:root:[Peer] Data received from client: {"operation": {"action": "set", "key": 1, "value": 20}, "timestamp": 1, "ttl": 0}
+INFO:root:[Peer] Replica from 8082 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62010)
+INFO:root:[Peer] Peticiones recibidas: 5
+INFO:root:[Peer] Data received from client: {"operation": {"action": "sum", "key": 1, "value": 10}, "timestamp": 0, "ttl": 1}
+INFO:root:[Peer] Data into queue: {'operation': {'action': 'sum', 'key': 1, 'value': 10}, 'timestamp': 0, 'ttl': 0}
+INFO:root:[Peer] Consuming request: {"operation": {"action": "sum", "key": 1, "value": 10}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Replicating request
+INFO:root:[Peer] Timestamp: 3
+INFO:root:[StateMachine] Exported StateMachine	obj_id 2071164111184
+INFO:root:[Peer] Response: False
+INFO:root:[Peer] StateMachine copy: {0: 10.1, 1: 20}
+INFO:root:[Peer] Replicating operation: {'action': 'sum', 'key': 1, 'value': 10}
+INFO:root:[Peer] Replicating message: {"operation": {"action": "sum", "key": 1, "value": 10}, "timestamp": 3, "ttl": 0}
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62011)
+INFO:root:[Peer] Peticiones recibidas: 5
+INFO:root:[Peer] Data received from client: {"operation": {"action": "sum", "key": 1, "value": 10}, "timestamp": 3, "ttl": 0}
+INFO:root:[Peer] Replica from 8081 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62012)
+INFO:root:[Peer] Peticiones recibidas: 5
+INFO:root:[Peer] Data received from client: {"operation": {"action": "sum", "key": 1, "value": 10}, "timestamp": 3, "ttl": 0}
+INFO:root:[Peer] Replica from 8082 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62013)
+INFO:root:[Peer] Peticiones recibidas: 6
+INFO:root:[Peer] Data received from client: {"operation": {"action": "mult", "key": 1, "value": 2}, "timestamp": 0, "ttl": 1}
+INFO:root:[Peer] Data into queue: {'operation': {'action': 'mult', 'key': 1, 'value': 2}, 'timestamp': 0, 'ttl': 0}
+INFO:root:[Peer] Consuming request: {"operation": {"action": "mult", "key": 1, "value": 2}, "timestamp": 0, "ttl": 0}
+INFO:root:[Peer] Replicating request
+INFO:root:[Peer] Timestamp: 3
+INFO:root:[StateMachine] Exported StateMachine	obj_id 2071164111184
+INFO:root:[Peer] StateMachine copy: {0: 10.1, 1: 20}
+INFO:root:[Peer] Replicating operation: {'action': 'mult', 'key': 1, 'value': 2}
+INFO:root:[Peer] Replicating message: {"operation": {"action": "mult", "key": 1, "value": 2}, "timestamp": 3, "ttl": 0}
+INFO:root:[StateMachine] action mult and value 2
+INFO:root:[StateMachine] Key 1 updated to 0
+INFO:root:[Peer] Response: True
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62014)
+INFO:root:[Peer] Peticiones recibidas: 6
+INFO:root:[Peer] Data received from client: {"operation": {"action": "mult", "key": 1, "value": 2}, "timestamp": 3, "ttl": 0}
+INFO:root:[Peer] Replica from 8081 Respuesta: 
+INFO:root:[Peer] Client connected from ('127.0.0.1', 62015)
+INFO:root:[Peer] Peticiones recibidas: 6
+INFO:root:[Peer] Data received from client: {"operation": {"action": "mult", "key": 1, "value": 2}, "timestamp": 3, "ttl": 0}
+INFO:root:[Peer] Replica from 8082 Respuesta: 
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
+INFO:root:[Peer] Buffer vacío, esperando
